@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .cell {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+    <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js" defer></script>
+    <script src="./main.js" defer></script>
+    <title>Game</title>
+</head>
+<body>
+    <p id="peer-id"></p>
+    <input type="text" id="send-id" placeholder="相手のIDを入力">
+    <button id="send">接続</button>
+
+    <table border="1">
+        <tr>
+            <td class="cell" data-row="0" data-col="0"></td>
+            <td class="cell" data-row="0" data-col="1"></td>
+            <td class="cell" data-row="0" data-col="2"></td>
+        </tr>
+        <tr>
+            <td class="cell" data-row="1" data-col="0"></td>
+            <td class="cell" data-row="1" data-col="1"></td>
+            <td class="cell" data-row="1" data-col="2"></td>
+        </tr>
+        <tr>
+            <td class="cell" data-row="2" data-col="0"></td>
+            <td class="cell" data-row="2" data-col="1"></td>
+            <td class="cell" data-row="2" data-col="2"></td>
+        </tr>
+    </table>
+</body>
+</html>
