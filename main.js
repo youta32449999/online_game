@@ -8,18 +8,25 @@
     let mySymbol = "○";
 
     let dataConnection = null;
+
+    // どっちのターンかを保持
+    let turn = "○";
     
     // セルのクリックを検知
     document.querySelectorAll('.cell').forEach((element) => {
         element.addEventListener('click', (event) => {
+            if(turn !== mySymbol) return;
+
             const target = event.target;
             const row = target.dataset.row;
             const col = target.dataset.col;
             table[row][col] = mySymbol;
 
             drawTable();
-            console.log(dataConnection);
-            dataConnection.send(JSON.stringify(table))
+            const nextTurn = (turn === '○') ? '×' : '○';
+            turn = nextTurn;
+            const message = createMessage(table, nextTurn);
+            dataConnection.send(message);
         })
     })
 
@@ -34,7 +41,7 @@
 
     // Peer作成
     const peer = new Peer({
-        key: ''
+        key: 'b405e267-de9a-4249-b5c3-43c59052f918'
     });
 
     // PeerID取得
@@ -43,17 +50,22 @@
     });
 
     // データチャネルでの送信処理
-
     document.querySelector('#send').onclick = () => {
         if(dataConnection === null){
             const destID = document.querySelector('#send-id').value;
             dataConnection = peer.connect(destID);
             dataConnection.on('open', () => {
                 console.log('connection ok');
+                turn = '×';
+                const message = createMessage(table, turn);
+                dataConnection.send(message);
             });
             dataConnection.on('data', (data) => {
-                const tbl = JSON.parse(data);
-                table = tbl;
+                const message = JSON.parse(data);
+                table = message['table'];
+                turn = message['turn'];
+                console.log(turn);
+                console.log(mySymbol);
                 drawTable();
             });
         }
@@ -66,10 +78,22 @@
             dataConnection = conn;
             mySymbol = "×";
             dataConnection.on('data', (data) => {
-                const tbl = JSON.parse(data);
-                table = tbl;
+                const message = JSON.parse(data);
+                table = message['table'];
+                turn = message['turn'];
                 drawTable();
+                console.log(turn);
+                console.log(mySymbol);
             });
+        } else {
+            conn.close();
         }
     });
+
+    function createMessage(table, sysmbol){
+        return JSON.stringify({
+            table: table,
+            turn: sysmbol
+        });
+    }
 })()
